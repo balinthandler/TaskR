@@ -34,7 +34,7 @@ const createTask = (title, description, duedate) => {
 }
 //Put Task in corresponding Project [tasks] array
 const taskToProject = (task, projectIndex) => {
-    projects[projectIndex].tasks.unshift(task);
+    projects[projectIndex].tasks.push(task);
 }
 //Task rename
 const renameTask = (newTitle, projectIndex, taskIndex) => {

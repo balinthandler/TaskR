@@ -71,6 +71,7 @@ const showSelectedProject = (projectIndex) => {
         const projectH1 = document.createElement('input');
         projectH1.value = projects[projectIndex].name;
         projectH1.id = 'projectTitle';
+        projectH1.setAttribute('autocomplete', 'off');
         projectH1.setAttribute('spellcheck', false);
         projectH1.setAttribute('data-index', projectIndex);
         projectNameContainer.appendChild(delProject);
@@ -81,35 +82,42 @@ const showSelectedProject = (projectIndex) => {
     const navbar = document.createElement('div');
         navbar.id = 'navbar';
         content.appendChild(navbar);
-    //Add Task Button
-    const addTask = document.createElement('button');
-        addTask.textContent = 'Add Task';
-        addTask.id = 'addTask';
-        addTask.classList.add('navButtons')
-        navbar.appendChild(addTask);
-        //Upcoming Button
+    //Upcoming Button
     const upcoming = document.createElement('button');
         upcoming.classList.add('navButtons');
         upcoming.id = 'upcoming';
-        upcoming.innerHTML = '&#9744; Show Upcoming';
+        upcoming.innerHTML = 'Show Upcoming';
         navbar.appendChild(upcoming);
     //Completed Button
     const completed = document.createElement('button');
         completed.classList.add('navButtons');
         completed.id = 'completed';
-        completed.innerHTML = '&#9745; Show Completed';
+        completed.innerHTML = 'Show Completed';
         navbar.appendChild(completed);
     //All Button
     const all = document.createElement('button');
         all.classList.add('navButtons');
         all.id = 'all';
-        all.innerHTML = '&#9776; Show All';
+        all.innerHTML = 'Show All';
         navbar.appendChild(all);
+
+
         showTasks(projects[projectIndex]);
         showTaskDetails(projects[projectIndex]);
+        //Add Task Button
+        if (taskFilter == 'upcoming' || taskFilter == 'all'){
+            const addTask = document.createElement('button');
+                addTask.id = 'addTask';
+            const addTaskIcon = document.createElement('button');
+                addTaskIcon.id = 'addTaskIcon';
+                addTaskIcon.textContent= '+';
+            addTask.appendChild(addTaskIcon);
+            content.appendChild(addTask);
+        }
         deleteTask();
         newTask();
         completeTask();
+        filters();
 
 }
 
@@ -136,58 +144,111 @@ const projectRename = () => {customEventListener('#projectTitle', 'keyup', () =>
     }
 })}
 
+//Task filters 
+const filters = () => {
+    const filterButtons = document.querySelectorAll('.navButtons');
+    filterButtons.forEach(e => e.addEventListener('click', () => {
+        if (e.id == 'upcoming') {
+            taskFilter = 'upcoming';
+            e.classList.toggle("active");
+        } else if (e.id == 'completed') {
+            taskFilter = 'completed';
+        } else if (e.id == 'all') {
+            taskFilter = 'all';
+        }
+        showSelectedProject(activeProjectID);
+        console.log(taskFilter);
+    }))
+
+}
+
 //Display Tasks inside selected Project
 const showTasks = (project) => {
     project.tasks.forEach(e => {
-        if (e.flag == taskFilter){
+        const showFilteredTasks = () => {    
+            //Task + Description Holder
+            const taskAndDetailsHolder = document.createElement('div');
+                taskAndDetailsHolder.classList.add('taskAndDetailsHolder');
+            //Task + Check + Delete Container
+            const taskContainer = document.createElement('div');
+                taskContainer.classList.add('taskContainer');
+                taskContainer.setAttribute('data-index', project.tasks.indexOf(e));
+            //Chech Icon
+            const isDoneIcon = document.createElement('button');
+                isDoneIcon.setAttribute('type', 'checkbox');
+                isDoneIcon.classList.add('isDone');
+                isDoneIcon.innerHTML = '&#10004';
+            //Check Sign Container
+            const checkboxContainer = document.createElement('div');
+                if (e.flag == 'completed'){
+                    checkboxContainer.classList.add('checkboxContainerCompleted');
+                } else {
+                    checkboxContainer.classList.add('checkboxContainer');
+                }
+                checkboxContainer.setAttribute('data-index', project.tasks.indexOf(e));
+            //Task Title Span
+            const taskTitleContainer = document.createElement('span');
+                taskTitleContainer.setAttribute('data-taskindex', project.tasks.indexOf(e));
+                taskTitleContainer.classList.add('taskTitleContainer');
+             //   taskTitleContainer.setAttribute('contenteditable', true);
+             //Task Title Input
+             const taskTitle = document.createElement('input');
+                taskTitle.setAttribute('data-taskindex', project.tasks.indexOf(e));
+                taskTitle.classList.add('taskTitle');
+                if (e.title == '') {
+                    taskTitle.placeholder = 'Add Title here';
+                } else {
+                    taskTitle.value = e.title;
+                }
+                taskTitle.setAttribute('spellcheck', false);
+                taskTitle.setAttribute('autocomplete', 'off');
+                taskTitle.setAttribute('data-index', project.tasks.indexOf(e));
+             //Erase Icon
+            const eraseTaskIcon = document.createElement('button');
+                eraseTaskIcon.classList.add('eraseTask');
+                eraseTaskIcon.textContent= '-';
+            //Erase Icon Container
+            const eraseTaskHolder = document.createElement('span');
+                eraseTaskHolder.classList.add('eraseTaskHolder');
+            //Task Details Span
+            const taskDetails = document.createElement('span');
+                taskDetails.classList.add('taskDetails');
+                taskDetails.setAttribute('data-index', project.tasks.indexOf(e));
+            //Task Details Text
+            const detailText = document.createElement('p');
+                if (e.description == ''){
+                    detailText.placeholder = 'Add description here...';
+                }else {
+                    detailText.innerHTML = e.description;
+                }
+                detailText.classList.add('detailText');
+                detailText.setAttribute('autocomplete', 'off');
+                detailText.setAttribute('data-index', project.tasks.indexOf(e));
+                detailText.setAttribute('spellcheck', false);
+                detailText.setAttribute('contenteditable', 'true');
 
-        const taskAndDetailsHolder = document.createElement('div');
-            taskAndDetailsHolder.classList.add('taskAndDetailsHolder');
-        const taskContainer = document.createElement('div');
-            taskContainer.classList.add('taskContainer');
-            taskContainer.setAttribute('data-index', project.tasks.indexOf(e));
-        const isDoneIcon = document.createElement('button');
-            isDoneIcon.setAttribute('type', 'checkbox');
-            isDoneIcon.classList.add('isDone');
-            isDoneIcon.innerHTML = '&#10004';
-        const checkboxContainer = document.createElement('div');
-            checkboxContainer.classList.add('checkboxContainer');
-            checkboxContainer.setAttribute('data-index', project.tasks.indexOf(e));
-        const taskTitle = document.createElement('span');
-            taskTitle.setAttribute('data-taskindex', project.tasks.indexOf(e));
-            taskTitle.textContent = e.title;
-            taskTitle.classList.add('taskTitle');
-            taskTitle.setAttribute('spellcheck', false);
-            taskTitle.setAttribute('contenteditable', 'true');
-            taskTitle.setAttribute('data-index', project.tasks.indexOf(e));
-        const eraseTaskIcon = document.createElement('button');
-            eraseTaskIcon.classList.add('eraseTask');
-            eraseTaskIcon.textContent= '-';
-        const eraseTaskHolder = document.createElement('span');
-            eraseTaskHolder.classList.add('eraseTaskHolder');
-        const taskDetails = document.createElement('span');
-            taskDetails.classList.add('taskDetails');
-            taskDetails.setAttribute('data-index', project.tasks.indexOf(e));
-        const detailText = document.createElement('p');
-            detailText.innerHTML = e.description;
-            detailText.classList.add('detailText');
-            detailText.setAttribute('data-index', project.tasks.indexOf(e));
-            detailText.setAttribute('spellcheck', false);
-            detailText.setAttribute('contenteditable', 'true');
 
+            //Appending Elements to Content
+            checkboxContainer.appendChild(isDoneIcon);
+            eraseTaskHolder.appendChild(eraseTaskIcon);
+            taskContainer.appendChild(checkboxContainer);
+            taskTitleContainer.appendChild(taskTitle);
+            taskContainer.appendChild(taskTitleContainer);
+            taskContainer.appendChild(eraseTaskHolder);
+            taskAndDetailsHolder.appendChild(taskContainer);
+            taskDetails.appendChild(detailText);
+            taskAndDetailsHolder.appendChild(taskDetails);
+            content.appendChild(taskAndDetailsHolder);
+        }    
+        if (taskFilter == 'all'){
+            showFilteredTasks();
 
-        //Appending Elements to Content
-        eraseTaskHolder.appendChild(eraseTaskIcon);
-        checkboxContainer.appendChild(isDoneIcon);
-        taskContainer.appendChild(eraseTaskHolder);
-        taskContainer.appendChild(taskTitle);
-        taskContainer.appendChild(checkboxContainer);
-        taskAndDetailsHolder.appendChild(taskContainer);
-        taskDetails.appendChild(detailText);
-        taskAndDetailsHolder.appendChild(taskDetails);
-        content.appendChild(taskAndDetailsHolder);
+        } else if (e.flag == taskFilter){
+            showFilteredTasks();
+
         }
     })
+
 }
 //Insert DOM Element After
 let insertAfter = (el, referenceNode) =>{
@@ -196,8 +257,8 @@ let insertAfter = (el, referenceNode) =>{
 
 //Display Task details under task
 const showTaskDetails = (project) => {
-    const taskTitle = document.querySelectorAll('.taskTitle');
-    taskTitle.forEach(e => e.addEventListener('click', () => {
+    const taskTitleContainer = document.querySelectorAll('.taskTitleContainer');
+    taskTitleContainer.forEach(e => e.addEventListener('click', () => {
         let currentIndex = (e.getAttribute('data-taskindex'));
         e.classList.toggle("active");
 
@@ -224,16 +285,20 @@ const showTaskDetails = (project) => {
 
 //Create New Task
 const newTask = () => {
-    const newTaskButton = document.querySelector('#addTask');
-    newTaskButton.addEventListener('click', () => {
-        const task = createTask('New Task', '');
-        taskToProject(task, activeProjectID);
-        showSelectedProject(activeProjectID);
-    })
+    if (taskFilter == 'upcoming' || taskFilter == 'all'){
+        const newTaskButton = document.querySelector('#addTask');
+        newTaskButton.addEventListener('click', () => {
+            const task = createTask('', '');
+            
+            taskFilter = 'upcoming';
+            taskToProject(task, activeProjectID);
+            showSelectedProject(activeProjectID);
+        })
+    }
 }
 //Complete task
 const completeTask = () => {
-    const completeButton = document.querySelectorAll('.checkboxContainer');
+    const completeButton = document.querySelectorAll('.checkboxContainer, .checkboxContainerCompleted');
     completeButton.forEach(e => e.addEventListener('click', () => {
         console.log('yay');
         const flag = projects[activeProjectID].tasks[e.getAttribute('data-index')].flag;
@@ -252,7 +317,8 @@ const completeTask = () => {
 const taskRenameListener = () => {
     const taskTitle = document.querySelectorAll('.taskTitle');
     taskTitle.forEach(e => e.addEventListener('keyup', () => {
-        renameTask(e.textContent, activeProjectID, e.getAttribute('data-index'));
+        renameTask(e.value, activeProjectID, e.getAttribute('data-index'));
+        console.log(e.value)
     }))
 }
 
