@@ -52,7 +52,11 @@ const showProjects = () => {
     projects.forEach(e => {
         const element = document.createElement('span');
             element.classList.add('projectsElements');
+            if (e.name == '') {
+                element.textContent = `Project ${projects.indexOf(e)+1}`;
+            } else {
             element.textContent = e.name;
+            }
             element.setAttribute('data-index', projects.indexOf(e));
             sidebar.appendChild(element);    
     })
@@ -69,7 +73,11 @@ const showSelectedProject = (projectIndex) => {
             delProject.textContent = '-';
             delProject.setAttribute('data-index', projectIndex);
         const projectH1 = document.createElement('input');
-        projectH1.value = projects[projectIndex].name;
+        if (projects[projectIndex].name == '') {
+            projectH1.placeholder = 'Add Project Name...';
+        } else {
+            projectH1.value = projects[projectIndex].name;
+        }
         projectH1.id = 'projectTitle';
         projectH1.setAttribute('autocomplete', 'off');
         projectH1.setAttribute('spellcheck', false);
@@ -84,18 +92,27 @@ const showSelectedProject = (projectIndex) => {
         content.appendChild(navbar);
     //Upcoming Button
     const upcoming = document.createElement('button');
+        if (taskFilter == 'upcoming') {
+            upcoming.classList.add('activeNav');
+        }
         upcoming.classList.add('navButtons');
         upcoming.id = 'upcoming';
         upcoming.innerHTML = 'Show Upcoming';
         navbar.appendChild(upcoming);
     //Completed Button
     const completed = document.createElement('button');
+        if (taskFilter == 'completed') {
+            completed.classList.add('activeNav');
+        }
         completed.classList.add('navButtons');
         completed.id = 'completed';
         completed.innerHTML = 'Show Completed';
         navbar.appendChild(completed);
     //All Button
     const all = document.createElement('button');
+        if (taskFilter == 'all') {
+            all.classList.add('activeNav');
+        }
         all.classList.add('navButtons');
         all.id = 'all';
         all.innerHTML = 'Show All';
@@ -118,6 +135,8 @@ const showSelectedProject = (projectIndex) => {
         newTask();
         completeTask();
         filters();
+        taskRenameListener();
+
 
 }
 
@@ -133,15 +152,13 @@ const sidebarProjectClickListener = () => {customEventListener('.projectsElement
 
 //Rename Project with input field 
 const projectRename = () => {customEventListener('#projectTitle', 'keyup', () =>{
-    if (event.keyCode == 13) {
+        if (event.keyCode == 13) {
+
+            document.activeElement.blur();
+        }
         const inp = document.querySelector('#projectTitle');
-        if (inp.value != '') {
         renameProject(inp.value, inp.getAttribute('data-index'));
         showProjects();
-        }else{
-            alert('Can\'t be empty!');
-        }
-    }
 })}
 
 //Task filters 
@@ -150,11 +167,12 @@ const filters = () => {
     filterButtons.forEach(e => e.addEventListener('click', () => {
         if (e.id == 'upcoming') {
             taskFilter = 'upcoming';
-            e.classList.toggle("active");
+
         } else if (e.id == 'completed') {
             taskFilter = 'completed';
         } else if (e.id == 'all') {
             taskFilter = 'all';
+            e.id = 'asd';
         }
         showSelectedProject(activeProjectID);
         console.log(taskFilter);
@@ -173,65 +191,76 @@ const showTasks = (project) => {
             const taskContainer = document.createElement('div');
                 taskContainer.classList.add('taskContainer');
                 taskContainer.setAttribute('data-index', project.tasks.indexOf(e));
-            //Chech Icon
-            const isDoneIcon = document.createElement('button');
-                isDoneIcon.setAttribute('type', 'checkbox');
-                isDoneIcon.classList.add('isDone');
-                isDoneIcon.innerHTML = '&#10004';
             //Check Sign Container
-            const checkboxContainer = document.createElement('div');
+            const checkboxContainer = document.createElement('span');
                 if (e.flag == 'completed'){
                     checkboxContainer.classList.add('checkboxContainerCompleted');
                 } else {
                     checkboxContainer.classList.add('checkboxContainer');
                 }
                 checkboxContainer.setAttribute('data-index', project.tasks.indexOf(e));
+                //Check Icon
+                const isDoneIcon = document.createElement('button');
+                    isDoneIcon.setAttribute('type', 'checkbox');
+                    isDoneIcon.classList.add('isDone');
+                    isDoneIcon.innerHTML = '&#10004';
             //Task Title Span
             const taskTitleContainer = document.createElement('span');
                 taskTitleContainer.setAttribute('data-taskindex', project.tasks.indexOf(e));
                 taskTitleContainer.classList.add('taskTitleContainer');
-             //   taskTitleContainer.setAttribute('contenteditable', true);
-             //Task Title Input
-             const taskTitle = document.createElement('input');
-                taskTitle.setAttribute('data-taskindex', project.tasks.indexOf(e));
-                taskTitle.classList.add('taskTitle');
-                if (e.title == '') {
-                    taskTitle.placeholder = 'Add Title here';
-                } else {
-                    taskTitle.value = e.title;
-                }
-                taskTitle.setAttribute('spellcheck', false);
-                taskTitle.setAttribute('autocomplete', 'off');
-                taskTitle.setAttribute('data-index', project.tasks.indexOf(e));
-             //Erase Icon
-            const eraseTaskIcon = document.createElement('button');
-                eraseTaskIcon.classList.add('eraseTask');
-                eraseTaskIcon.textContent= '-';
+                //Task Title Input
+                const taskTitle = document.createElement('input');
+                    taskTitle.setAttribute('data-taskindex', project.tasks.indexOf(e));
+                    taskTitle.classList.add('taskTitle');
+                    if (e.title == '') {
+                        taskTitle.placeholder = 'Add Title here';
+                    } else {
+                        taskTitle.value = e.title;
+                    }
+                    taskTitle.setAttribute('spellcheck', false);
+                    taskTitle.setAttribute('autocomplete', 'off');
+                    taskTitle.setAttribute('data-index', project.tasks.indexOf(e));
             //Erase Icon Container
             const eraseTaskHolder = document.createElement('span');
+                eraseTaskHolder.setAttribute('data-index', project.tasks.indexOf(e));
                 eraseTaskHolder.classList.add('eraseTaskHolder');
+                //Erase Icon
+                const eraseTaskIcon = document.createElement('button');
+                    eraseTaskIcon.classList.add('eraseTask');
+                    eraseTaskIcon.textContent= '-';
+            //Task Details Icon Holder
+            const detailsIconHolder = document.createElement('button');
+                detailsIconHolder.classList.add('detailsIconHolder');
+                detailsIconHolder.setAttribute('data-index', project.tasks.indexOf(e));
+                //TaskDetailsIcon  
+                const detailsIcon = document.createElement('p');
+                detailsIcon.classList.add('detailsIcon');
+                detailsIcon.textContent = '...';
+
             //Task Details Span
             const taskDetails = document.createElement('span');
                 taskDetails.classList.add('taskDetails');
                 taskDetails.setAttribute('data-index', project.tasks.indexOf(e));
-            //Task Details Text
-            const detailText = document.createElement('p');
-                if (e.description == ''){
-                    detailText.placeholder = 'Add description here...';
-                }else {
-                    detailText.innerHTML = e.description;
-                }
-                detailText.classList.add('detailText');
-                detailText.setAttribute('autocomplete', 'off');
-                detailText.setAttribute('data-index', project.tasks.indexOf(e));
-                detailText.setAttribute('spellcheck', false);
-                detailText.setAttribute('contenteditable', 'true');
+                //Task Details Text
+                const detailText = document.createElement('p');
+                    if (e.description == ''){
+                        detailText.placeholder = 'Add description here...';
+                    }else {
+                        detailText.innerHTML = e.description;
+                    }
+                    detailText.classList.add('detailText');
+                    detailText.setAttribute('autocomplete', 'off');
+                    detailText.setAttribute('data-index', project.tasks.indexOf(e));
+                    detailText.setAttribute('spellcheck', false);
+                    detailText.setAttribute('contenteditable', 'true');
 
 
             //Appending Elements to Content
             checkboxContainer.appendChild(isDoneIcon);
             eraseTaskHolder.appendChild(eraseTaskIcon);
             taskContainer.appendChild(checkboxContainer);
+            detailsIconHolder.appendChild(detailsIcon);
+            taskContainer.appendChild(detailsIconHolder);
             taskTitleContainer.appendChild(taskTitle);
             taskContainer.appendChild(taskTitleContainer);
             taskContainer.appendChild(eraseTaskHolder);
@@ -250,17 +279,14 @@ const showTasks = (project) => {
     })
 
 }
-//Insert DOM Element After
-let insertAfter = (el, referenceNode) =>{
-    referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling)
-}
+
 
 //Display Task details under task
 const showTaskDetails = (project) => {
-    const taskTitleContainer = document.querySelectorAll('.taskTitleContainer');
-    taskTitleContainer.forEach(e => e.addEventListener('click', () => {
-        let currentIndex = (e.getAttribute('data-taskindex'));
-        e.classList.toggle("active");
+    const detailsIconHolder = document.querySelectorAll('.detailsIconHolder');
+    detailsIconHolder.forEach(e => e.addEventListener('click', () => {
+        let currentIndex = (e.getAttribute('data-index'));
+        e.classList.toggle("detailsToggle");
 
         const details = document.querySelectorAll('.taskDetails');
         details.forEach(element => {
@@ -275,7 +301,6 @@ const showTaskDetails = (project) => {
                         setTimeout(() => {
                             element.style.display = 'table';
                         }, 200)
-                        taskRenameListener();
                         taskUpdateWatcher();
                     }
                 }
@@ -300,7 +325,6 @@ const newTask = () => {
 const completeTask = () => {
     const completeButton = document.querySelectorAll('.checkboxContainer, .checkboxContainerCompleted');
     completeButton.forEach(e => e.addEventListener('click', () => {
-        console.log('yay');
         const flag = projects[activeProjectID].tasks[e.getAttribute('data-index')].flag;
         const flagSet = (flagStatus) => {
             projects[activeProjectID].tasks[e.getAttribute('data-index')].flag = flagStatus;
@@ -315,8 +339,12 @@ const completeTask = () => {
 }
 //Rename Task with Listener
 const taskRenameListener = () => {
+
     const taskTitle = document.querySelectorAll('.taskTitle');
     taskTitle.forEach(e => e.addEventListener('keyup', () => {
+        if (event.keyCode == 13) {
+            e.blur();
+        }
         renameTask(e.value, activeProjectID, e.getAttribute('data-index'));
         console.log(e.value)
     }))
@@ -334,8 +362,16 @@ const deleteTask = () => {
 
 //Update Task Description on textarea change
 const taskUpdateWatcher = () => {
-    const taskDetails = document.querySelectorAll('.detailText');
-    taskDetails.forEach(e => e.addEventListener('keyup', () => {
+    const taskDetails = document.querySelectorAll('.taskDetails');
+    const detailText = document.querySelectorAll('.detailText');
+    taskDetails.forEach(elem => elem.addEventListener('click', () => {
+        detailText.forEach((e) => {
+            if (elem.getAttribute('data-index') == e.getAttribute('data-index')) {
+                e.focus();
+            }
+        })       
+    }));
+    detailText.forEach(e => e.addEventListener('keyup', () => {
         projects[activeProjectID].tasks[e.getAttribute('data-index')].description = e.innerHTML;
     }))
 }
@@ -382,7 +418,7 @@ const deleteProject = () => {customEventListener('#delProject', 'click', () =>{
 const newProject = () => {customEventListener('#addProject', 'click', () =>{
     let add = document.querySelector('#addProject');
     add.addEventListener('click', () => {
-        let newProj = createProject('New Project');
+        let newProj = createProject('');
         activeProjectID = '0';
         projectToProjects(newProj);
         showProjects();

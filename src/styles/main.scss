@@ -1,13 +1,13 @@
-$headerBg: rgb(255, 255, 255);
-$headerText: rgb(41, 77, 87);
+$headerBg: rgb(41, 77, 87);
+$headerText: rgb(255, 255, 255);
 $sidebarBg: rgb(221, 221, 221);
-$navbarBg: rgb(100, 100, 100);
+$navbarBg: rgb(251, 251, 251);
 $navBarButtons: rgb(41, 77, 87);
 $contentBg: rgb(251, 251, 251);
 $contentText: rgb(51, 51, 51);
 $projectBorder: 1px solid rgb(255, 255, 255);
 $taskButtonColors: rgb(148, 148, 148);
-$completeButtonColor: rgb(228, 161, 38);
+$toCompleteColor: rgb(228, 161, 38);
 $addColor: rgb(94, 192, 94);
 $addBorder: rgb(73, 163, 57);
 $removeColor: rgb(202, 59, 59);
@@ -42,7 +42,6 @@ body {
     justify-content: center;
     color: $headerText;
     font-size: 2rem;
-    border-bottom: 1px solid $sidebarBg;
     @include noSelect();
     
 }
@@ -55,9 +54,10 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: $sidebarBg;
     height: 100%;
     width: 300px;
+    border-right: 1px solid white;
+
 }
     #titleLabel{
         padding: 0.5rem 0 0.5rem 0;
@@ -88,17 +88,18 @@ body {
     }
     .projectsElements{
         width: 100%;
-        padding: 1rem 0 1rem 2rem;
-        border-bottom: $projectBorder;
+        padding: 1rem 1rem 1rem 2rem;
+        border-top: 1px solid white;
+        border-bottom: 1px solid white;
         cursor: default;
-        transition: background 0.5s ease-out;
+        transition: border 0.5s ease-out;
         @include noSelect();
 
     }
     .projectsElements:hover{
-        width: 100%;
-        background: rgb(218, 218, 218);
-        transition: background 0.5s ease-out;
+        border-top: 1px solid $sidebarBg;
+        border-bottom: 1px solid $sidebarBg ;
+        transition: border 0.2s ease-out;
     }
 #main{
         display: flex;
@@ -112,7 +113,9 @@ body {
         display: flex;
         justify-content: left;
         align-items: center;
+        border-bottom: 1px solid $sidebarBg;
         width: 100%;
+
         @include noSelect();
 
         
@@ -122,27 +125,22 @@ body {
             background: $navBarButtons;
             border: 0;
             margin: 1rem 0 1rem 1rem;
-            padding: 0.75rem;
+            padding: .5rem .75rem;
             color: white;
             transition: background 0.5s ease-out;
         }
         .navButtons:hover{
-            background: rgb(50, 50, 50);
+            background: $addColor;
             transition: background 0.5s ease-out;
 
         }
         .navButtons:focus{
             outline: none;
         }
-        #upcoming{
-            background: $completeButtonColor;
-        }
-        #upcoming:active{
+        .activeNav{
             background: $addColor;
         }
-        #completed{
-            background: $addBorder;
-        }
+
         
 
     #content {
@@ -164,7 +162,7 @@ body {
                 border-radius: 50%;
                 border: none;
                 background-color: $removeColor;
-                margin: 1rem;
+                margin: 1rem 1rem 0 1rem;
                 color: white;
                 transition: border-radius .5s;
                 @include noSelect();
@@ -178,7 +176,7 @@ body {
                 outline: none;
             }
             #projectTitle {
-                color: white;
+                color: $headerBg;
                 font-size: 2rem;
                 background: none;
                 border: none;
@@ -216,6 +214,7 @@ body {
                     margin: 0px;
                     height: 100%;
                     width: 3rem;
+                    border: none;
                     border-radius: 0;
                     background: $taskButtonColors;
                     transition: background .5s ease-out;
@@ -252,6 +251,39 @@ body {
                     .eraseTask:focus{
                         outline: none;
                     }
+
+                .detailsIconHolder{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0px;
+                    margin: 0px;
+                    height: 100%;
+                    width: 3rem;
+                    border: none;
+                    background: $taskButtonColors;
+                    border-radius: 0;
+                    transition: background .5s ease-out;
+                    @include noSelect();
+                }
+                .detailsIconHolder:hover{
+                    background: $toCompleteColor;   
+                    transition: background .5s ease-out;
+                }
+                .detailsIconHolder:focus{
+                    outline: none;
+                }
+                .detailsToggle{
+                    background: $toCompleteColor;
+                }
+                    .detailsIcon{
+                        color: white;
+                        text-align: center;
+                        padding: 0px;
+                        margin: 0px;
+    
+                    
+                    }
                 .checkboxContainer{
                     display: flex;
                     align-items: center;
@@ -260,7 +292,8 @@ body {
                     margin: 0px;
                     height: 100%;
                     width: 3rem;
-                    background: $completeButtonColor;
+                    border:none;
+                    background: $toCompleteColor;
                     border-radius: 0;
                     transition: background .5s ease-out;
                     transition: border-radius .5s ease-out;
@@ -291,6 +324,7 @@ body {
                     margin: 0px;
                     height: 100%;
                     width: 3rem;
+                    border: none;
                     background: $addColor;
                     border-radius: 0;
                     transition: background .5s ease-out;
@@ -304,15 +338,15 @@ body {
                 .checkboxContainerCompleted:hover{
                     border-top-left-radius: 50%;
                     border-bottom-left-radius: 50%;
-                    background: $completeButtonColor;
+                    background: $toCompleteColor;
                     transition: background .5s ease-out;
                     transition: border-radius .5s ease-out;
                 }
                 .checkboxContainerCompleted:hover .isDone{
-                    color: $completeButtonColor;
+                    color: $toCompleteColor;
                 }
                     .checkboxContainerCompleted:active .isDone{
-                    background: $completeButtonColor;
+                    background: $toCompleteColor;
                     color: white;
                 }
 
@@ -321,10 +355,11 @@ body {
                         border: none;
                         height: 1.5rem;
                         width: 1.5rem;
+                        margin:0;
                         border-radius: 50%;
-                        background: $headerBg;
+                        background: white;
                         cursor: default;
-                        color: $completeButtonColor;
+                        color: $toCompleteColor;
                         transition: background .5s ease-out;
                     }
                     .isDone:focus{
@@ -334,8 +369,10 @@ body {
                     .taskTitleContainer {
                         display: flex;
                         margin: 0;
-                        padding: 0 1rem 0 1rem;
-                        width: 400px;
+                        padding: 0;
+                        width: 50vw;
+                        min-width: 200px;
+                        max-width: 500px;
                         height: 100%;
                         color: $taskText;
                         align-items: center;
@@ -356,6 +393,7 @@ body {
                         cursor: default;
                         background: none;
                         width: 100%;
+                        padding-left: 1rem;
                         font-size: 1rem;
                         border: none;
                     }
@@ -365,21 +403,28 @@ body {
 
             .taskDetails{
                 overflow: hidden;
-                margin: 0rem 4rem 0rem 4rem;
+                margin: 0rem 4rem 0rem 7rem;
                 height: 0;
-                padding: 0 1rem;
-                width: 400px;
+                padding: 0rem;
+                width: 50vw;
+                min-width: 200px;
+                max-width: 500px;
+
+
                 color: $taskText;
                 background: $sidebarBg;
                 transition: height 0.2s ease-out;
 
             }
+            
             .detailText:active + .taskDetails{
                 background: $addColor;
                 height: auto;
                 max-height:auto;
             }
                 .detailText{
+                    font-size: 0.8rem;
+                    margin: 1rem;
 
 
                 }
