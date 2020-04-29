@@ -67,6 +67,9 @@ body {
         
     }
     #addProject{
+        display: flex;
+        justify-content: center;
+        align-items: center;
         height: 1.5rem;
         width: 1.5rem;
         border-radius: 50%;
@@ -183,7 +186,6 @@ body {
                 width: 100%;
                 margin: 1rem 1rem 0 0;
                 text-decoration: none;
-                text-decoration: underline;
             }
             #projectTitle:focus{
                 outline:none;
@@ -239,6 +241,9 @@ body {
                 }
                     .eraseTask{
                         -webkit-appearance: none;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
                         border: none;
                         height: 1.5rem;
                         width: 1.5rem;
@@ -351,11 +356,16 @@ body {
                 }
 
                     .isDone {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
                         -webkit-appearance: none;
                         border: none;
                         height: 1.5rem;
                         width: 1.5rem;
                         margin:0;
+                        vertical-align: center;
+                        text-align: center;
                         border-radius: 50%;
                         background: white;
                         cursor: default;
@@ -464,6 +474,9 @@ body {
 
                 #addTaskIcon{
                     -webkit-appearance: none;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                     border: none;
                     height: 1.5rem;
                     width: 1.5rem;
